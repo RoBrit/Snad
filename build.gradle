@@ -1,0 +1,85 @@
+/*
+ * build.gradle
+ *
+ * Copyright (c) 2016 TheRoBrit
+ *
+ * SNAD is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SNAD is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+apply plugin: 'forge'
+apply plugin: 'maven-publish'
+
+apply from: 'gradle/scripts/dependencies.gradle'
+apply from: 'gradle/scripts/builds.gradle'
+
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+
+        maven {
+            name = "forge"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+    }
+    dependencies {
+        classpath 'net.minecraftforge.gradle:ForgeGradle:1.2-SNAPSHOT'
+    }
+}
+
+apply plugin: 'forge'
+apply plugin: 'maven-publish'
+
+archivesBaseName = "Snad" // Mod ID
+group = "com.robrit.snad" // Mod Package
+version = "${minecraft_version}-${mod_version}" // Mod Version
+
+minecraft {
+    version = "${minecraft_version}-${forge_version}"
+    runDir = 'run'
+
+    replace "@VERSION@", project.version
+    replaceIn "ModInformation.java"
+}
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java'
+        }
+        resources {
+            srcDir 'src/main/resources'
+        }
+    }
+}
+
+processResources {
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    from(sourceSets.main.resources.srcDirs) {
+        include '*.info'
+
+        expand 'version': project.version, 'mc_version': project.minecraft.version
+    }
+
+    // copy everything else, that's not the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude '**/*.info'
+    }
+}
