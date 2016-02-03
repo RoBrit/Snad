@@ -133,6 +133,7 @@ Here are a list of some of the people/person(s) that I'd like to thank for helpi
 
 * KiwiFails - For the idea of the mod.
 * Pahimar - EE3 is a great help in showing how to make a Minecraft mod, and for this awesome page you're looking at.
+* LordDusk - Doing an initial 1.8.9 build when I couldn't be bothered to.
 
 If you feel like you've been left out, deal with it...
 
