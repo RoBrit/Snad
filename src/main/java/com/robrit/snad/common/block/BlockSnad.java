@@ -106,9 +106,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
       this.checkFallable(world, pos);
     }
 
-    net.minecraft.block.Block
-        blockAbove =
-        world.getBlockState(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())).getBlock();
+    net.minecraft.block.Block blockAbove = world.getBlockState(pos.up()).getBlock();
 
     if (blockAbove == null) {
       return;
@@ -116,25 +114,16 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
 
     if (blockAbove instanceof BlockReed || blockAbove instanceof BlockCactus) {
       boolean isSameBlockType = true;
-      int height = 0;
+      int height = 1;
 
       while (isSameBlockType) {
-        if (world.getBlockState(new BlockPos(pos.getX(), pos.getY() + 1 + height, pos.getZ()))
-                .getBlock() != null) {
-          net.minecraft.block.Block
-              nextPlantBlock =
-              world.getBlockState(new BlockPos(pos.getX(), pos.getY() + 1 + height, pos.getZ()))
-                  .getBlock();
-
+        if (world.getBlockState(pos.up(height)).getBlock() != null) {
+          net.minecraft.block.Block nextPlantBlock = world.getBlockState(pos.up(height)).getBlock();
           if (nextPlantBlock.getClass() == blockAbove.getClass()) {
-            if (height < 2) {
-              for (int growthAttempts = 0; growthAttempts < ConfigurationData.SPEED_INCREASE_VALUE;
-                   growthAttempts++) {
-                world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 2 + height, pos.getZ()),
-                                    nextPlantBlock.getDefaultState());
-              }
-            } else {
-              isSameBlockType = false;
+            for (int growthAttempts = 0; growthAttempts < ConfigurationData.SPEED_INCREASE_VALUE;
+                 growthAttempts++) {
+              nextPlantBlock
+                  .updateTick(world, pos.up(height), world.getBlockState(pos.up(height)), rand);
             }
             height++;
           } else {
@@ -145,9 +134,9 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
         }
       }
     } else if (blockAbove instanceof IPlantable) {
-      world.setBlockState(new BlockPos(pos.getX(), pos.getY() + 2, pos.getZ()),
-                          blockAbove.getDefaultState());
+      blockAbove.updateTick(world, pos.up(), world.getBlockState(pos.up()), rand);
     }
+
   }
 
   private void checkFallable(World worldIn, BlockPos pos) {
