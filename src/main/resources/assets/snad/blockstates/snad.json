@@ -1,0 +1,6 @@
+{
+  "variants": {
+    "variant=red_snad": { "model":"minecraft:red_sand" },
+    "variant=snad": { "model":"minecraft:sand" }
+  }
+}
