@@ -24,4 +24,6 @@ public interface IProxy {
   void registerBlocks();
 
   void registerRecipes();
+
+  void registerBlockModels();
 }
