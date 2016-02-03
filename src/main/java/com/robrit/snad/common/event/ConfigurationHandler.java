@@ -31,6 +31,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 public class ConfigurationHandler {
+
   private static Configuration configuration;
   private static File configFile;
 

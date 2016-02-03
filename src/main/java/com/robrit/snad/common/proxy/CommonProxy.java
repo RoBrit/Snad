@@ -23,6 +23,7 @@ import com.robrit.snad.common.block.BlockSnad;
 
 import com.robrit.snad.common.item.ItemBlockSnadMeta;
 import com.robrit.snad.common.util.ModInformation;
+
 import net.minecraft.block.Block;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -36,23 +37,33 @@ import net.minecraftforge.fml.common.registry.GameRegistry;
 
 public abstract class CommonProxy implements IProxy {
 
-    public static final BlockSnad blockSnad = new BlockSnad();
+  public static final BlockSnad blockSnad = new BlockSnad();
 
-    @Override
-    public void registerBlocks() {
-        GameRegistry.registerBlock(blockSnad, ItemBlockSnadMeta.class, "snad");
-    }
+  @Override
+  public void registerBlocks() {
+    GameRegistry.registerBlock(blockSnad, ItemBlockSnadMeta.class, "snad");
+  }
 
-    @Override
-    public void registerRecipes() {
-        GameRegistry.addRecipe(new ItemStack(blockSnad), "S", "S", 'S', Blocks.sand);
-        //GameRegistry.addRecipe(new ItemStack(blockSnad, 1, 1), "S", "S", 'S', Blocks.sand.getMetaFromState(Blocks.sand.getStateFromMeta(1)));
-    }
+  @Override
+  public void registerRecipes() {
+    GameRegistry.addRecipe(new ItemStack(blockSnad), "S", "S", 'S', Blocks.sand);
+    //GameRegistry.addRecipe(new ItemStack(blockSnad, 1, 1), "S", "S", 'S', Blocks.sand.getMetaFromState(Blocks.sand.getStateFromMeta(1)));
+  }
 
-    @Override
-    public void registerBlockModels() {
-        ModelLoader.registerItemVariants(Item.getItemFromBlock(blockSnad), new ResourceLocation("snad:snad"), new ResourceLocation("snad:red_snad"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockSnad), 0, new ModelResourceLocation(ModInformation.MOD_ID + ":" + blockSnad.getUnlocalizedName().substring(5), "inventory"));
-        ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockSnad), 1, new ModelResourceLocation(ModInformation.MOD_ID + ":red_" + blockSnad.getUnlocalizedName().substring(5), "inventory"));
-    }
+  @Override
+  public void registerBlockModels() {
+    ModelLoader
+        .registerItemVariants(Item.getItemFromBlock(blockSnad), new ResourceLocation("snad:snad"),
+                              new ResourceLocation("snad:red_snad"));
+    ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockSnad), 0,
+                                               new ModelResourceLocation(
+                                                   ModInformation.MOD_ID + ":" + blockSnad
+                                                       .getUnlocalizedName().substring(5),
+                                                   "inventory"));
+    ModelLoader.setCustomModelResourceLocation(Item.getItemFromBlock(blockSnad), 1,
+                                               new ModelResourceLocation(
+                                                   ModInformation.MOD_ID + ":red_" + blockSnad
+                                                       .getUnlocalizedName().substring(5),
+                                                   "inventory"));
+  }
 }

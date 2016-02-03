@@ -33,67 +33,67 @@ import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 
 @Mod(modid = ModInformation.MOD_ID, name = ModInformation.MOD_NAME,
-        version = ModInformation.MOD_VERSION, dependencies = ModInformation.MOD_DEPENDENCIES,
-        certificateFingerprint = ModInformation.MOD_FINGERPRINT)
+    version = ModInformation.MOD_VERSION, dependencies = ModInformation.MOD_DEPENDENCIES,
+    certificateFingerprint = ModInformation.MOD_FINGERPRINT)
 public class Snad {
 
-    @Mod.Instance(ModInformation.MOD_ID)
-    private static Snad instance;
+  @Mod.Instance(ModInformation.MOD_ID)
+  private static Snad instance;
 
-    @SidedProxy(clientSide = ModInformation.PROXY_CLIENT_LOCATION,
-            serverSide = ModInformation.PROXY_SERVER_LOCATION)
-    private static IProxy proxy;
+  @SidedProxy(clientSide = ModInformation.PROXY_CLIENT_LOCATION,
+      serverSide = ModInformation.PROXY_SERVER_LOCATION)
+  private static IProxy proxy;
 
-    public static Snad getInstance() {
-        return instance;
+  public static Snad getInstance() {
+    return instance;
+  }
+
+  public static IProxy getProxy() {
+    return proxy;
+  }
+
+  @Mod.EventHandler
+  public static void preInit(FMLPreInitializationEvent event) {
+    ConfigurationHandler.setConfigFile(event.getSuggestedConfigurationFile());
+    ConfigurationHandler.init();
+    ConfigurationHandler.updateConfiguration();
+
+    proxy.registerBlocks();
+
+    if (event.getSide() == Side.CLIENT) {
+      proxy.registerBlockModels();
     }
 
-    public static IProxy getProxy() {
-        return proxy;
+    if (ModInformation.DEBUG_MODE) {
+      LogHelper.info(String.format("Finished pre-initialisation stage for %s",
+                                   ModInformation.MOD_ID));
     }
+  }
 
-    @Mod.EventHandler
-    public static void preInit(FMLPreInitializationEvent event) {
-        ConfigurationHandler.setConfigFile(event.getSuggestedConfigurationFile());
-        ConfigurationHandler.init();
-        ConfigurationHandler.updateConfiguration();
+  @Mod.EventHandler
+  public static void init(FMLInitializationEvent event) {
+    proxy.registerRecipes();
 
-        proxy.registerBlocks();
-
-        if (event.getSide() == Side.CLIENT) {
-            proxy.registerBlockModels();
-        }
-
-        if (ModInformation.DEBUG_MODE) {
-            LogHelper.info(String.format("Finished pre-initialisation stage for %s",
-                    ModInformation.MOD_ID));
-        }
+    if (ModInformation.DEBUG_MODE) {
+      LogHelper.info(String.format("Finished initialisation stage for %s",
+                                   ModInformation.MOD_ID));
     }
+  }
 
-    @Mod.EventHandler
-    public static void init(FMLInitializationEvent event) {
-        proxy.registerRecipes();
-
-        if (ModInformation.DEBUG_MODE) {
-            LogHelper.info(String.format("Finished initialisation stage for %s",
-                    ModInformation.MOD_ID));
-        }
+  @Mod.EventHandler
+  public static void postInit(FMLPostInitializationEvent event) {
+    if (ModInformation.DEBUG_MODE) {
+      LogHelper.info(String.format("Finished post-initialisation stage for %s",
+                                   ModInformation.MOD_ID));
     }
+  }
 
-    @Mod.EventHandler
-    public static void postInit(FMLPostInitializationEvent event) {
-        if (ModInformation.DEBUG_MODE) {
-            LogHelper.info(String.format("Finished post-initialisation stage for %s",
-                    ModInformation.MOD_ID));
-        }
+  @Mod.EventHandler
+  public void invalidFingerprint(FMLFingerprintViolationEvent event) {
+    if (ModInformation.MOD_FINGERPRINT.equals("@FINGERPRINT@")) {
+      LogHelper.error("No fingerprint found!");
+    } else {
+      LogHelper.warn("Invalid fingerprint found!");
     }
-
-    @Mod.EventHandler
-    public void invalidFingerprint(FMLFingerprintViolationEvent event) {
-        if (ModInformation.MOD_FINGERPRINT.equals("@FINGERPRINT@")) {
-            LogHelper.error("No fingerprint found!");
-        } else {
-            LogHelper.warn("Invalid fingerprint found!");
-        }
-    }
+  }
 }
