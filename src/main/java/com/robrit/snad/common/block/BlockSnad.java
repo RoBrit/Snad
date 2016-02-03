@@ -19,7 +19,7 @@
 
 package com.robrit.snad.common.block;
 
-import com.robrit.snad.common.item.IMetaBlockSnad;
+import com.robrit.snad.common.item.IMetaBlock;
 import com.robrit.snad.common.util.ConfigurationData;
 
 import net.minecraft.block.*;
@@ -27,10 +27,10 @@ import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.IProperty;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.properties.PropertyInteger;
 import net.minecraft.block.state.BlockState;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -41,21 +41,20 @@ import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
 //import net.minecraftforge.common.util.ForgeDirection;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
+public class BlockSnad extends BlockFalling implements IMetaBlock {
 
   public static final PropertyEnum<BlockSnad.EnumType>
       VARIANT =
       PropertyEnum.<BlockSnad.EnumType>create("variant", BlockSnad.EnumType.class);
 
   public BlockSnad() {
-//        super();
+    super(Material.sand);
     this.setTickRandomly(true);
     this.setHardness(0.5F);
-    this.setStepSound(Block.soundTypeSand);
+    this.setStepSound(net.minecraft.block.Block.soundTypeSand);
     this.setCreativeTab(CreativeTabs.tabMisc);
     this.setUnlocalizedName("snad");
     this.setDefaultState(this.blockState.getBaseState().withProperty(VARIANT, EnumType.SAND));
@@ -103,7 +102,11 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
 
   @Override
   public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
-    Block
+    if (!world.isRemote) {
+      this.checkFallable(world, pos);
+    }
+
+    net.minecraft.block.Block
         blockAbove =
         world.getBlockState(new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())).getBlock();
 
@@ -118,7 +121,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
       while (isSameBlockType) {
         if (world.getBlockState(new BlockPos(pos.getX(), pos.getY() + 1 + height, pos.getZ()))
                 .getBlock() != null) {
-          Block
+          net.minecraft.block.Block
               nextPlantBlock =
               world.getBlockState(new BlockPos(pos.getX(), pos.getY() + 1 + height, pos.getZ()))
                   .getBlock();
@@ -147,10 +150,39 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
     }
   }
 
+  private void checkFallable(World worldIn, BlockPos pos) {
+    if (canFallInto(worldIn, pos.down()) && pos.getY() >= 0) {
+      int i = 32;
+
+      if (!fallInstantly && worldIn.isAreaLoaded(pos.add(-i, -i, -i), pos.add(i, i, i))) {
+        if (!worldIn.isRemote) {
+          EntityFallingBlock
+              entityfallingblock =
+              new EntityFallingBlock(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(),
+                                     (double) pos.getZ() + 0.5D, worldIn.getBlockState(pos));
+          this.onStartFalling(entityfallingblock);
+          worldIn.spawnEntityInWorld(entityfallingblock);
+        }
+      } else {
+        worldIn.setBlockToAir(pos);
+        BlockPos blockpos;
+
+        for (blockpos = pos.down(); canFallInto(worldIn, blockpos) && blockpos.getY() > 0;
+             blockpos = blockpos.down()) {
+          ;
+        }
+
+        if (blockpos.getY() > 0) {
+          worldIn.setBlockState(blockpos.up(), this.getDefaultState());
+        }
+      }
+    }
+  }
+
   @Override
   public boolean canSustainPlant(IBlockAccess world, BlockPos pos, EnumFacing direction,
                                  IPlantable plantable) {
-    Block
+    net.minecraft.block.Block
         plant =
         plantable.getPlant(world, new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ())).getBlock();
     EnumPlantType
