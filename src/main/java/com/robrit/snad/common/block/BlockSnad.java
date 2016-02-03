@@ -19,7 +19,7 @@
 
 package com.robrit.snad.common.block;
 
-import com.robrit.snad.common.item.IMetaBlock;
+import com.robrit.snad.common.item.IMetaBlockSnad;
 import com.robrit.snad.common.util.ConfigurationData;
 
 import net.minecraft.block.*;
@@ -44,7 +44,7 @@ import net.minecraftforge.common.IPlantable;
 import java.util.List;
 import java.util.Random;
 
-public class BlockSnad extends BlockFalling implements IMetaBlock {
+public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
 
   public static final PropertyEnum<BlockSnad.EnumType>
       VARIANT =
