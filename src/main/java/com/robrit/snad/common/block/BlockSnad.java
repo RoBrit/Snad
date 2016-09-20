@@ -123,8 +123,11 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
           if (nextPlantBlock.getClass() == blockAbove.getClass()) {
             for (int growthAttempts = 0; growthAttempts < ConfigurationData.SPEED_INCREASE_VALUE;
                  growthAttempts++) {
-              nextPlantBlock
-                  .updateTick(world, pos.up(height), world.getBlockState(pos.up(height)), rand);
+            	if(growthAttempts == 0 | canSustainPlant(world.getBlockState(pos), world, pos, null, (IPlantable) blockAbove))
+            	{
+            		nextPlantBlock
+            		  .updateTick(world, pos.up(height), world.getBlockState(pos.up(height)), rand);
+            	}
             }
             height++;
           } else {
