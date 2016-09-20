@@ -77,7 +77,7 @@ public class ConfigurationHandler {
 
   @SubscribeEvent
   public static void onConfigurationChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-    if (event.modID.equalsIgnoreCase(ModInformation.MOD_ID)) {
+    if (event.getModID().equalsIgnoreCase(ModInformation.MOD_ID)) {
       updateConfiguration();
     }
   }

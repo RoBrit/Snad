@@ -23,7 +23,7 @@ import com.robrit.snad.common.block.BlockSnad;
 import com.robrit.snad.common.item.ItemBlockSnadMeta;
 import com.robrit.snad.common.util.ModInformation;
 
-import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -46,10 +46,10 @@ public abstract class CommonProxy implements IProxy {
     int redMetadata = BlockSnad.EnumType.RED_SAND.getMetadata();
 
     GameRegistry.addRecipe(new ItemStack(blockSnad, 1, regularMetadata),
-                           "S", "S", 'S', new ItemStack(Blocks.sand, 1, regularMetadata));
+                           "S", "S", 'S', new ItemStack(Blocks.SAND, 1, regularMetadata));
 
     GameRegistry.addRecipe(new ItemStack(blockSnad, 1, redMetadata),
-                           "S", "S", 'S', new ItemStack(Blocks.sand, 1, redMetadata));
+                           "S", "S", 'S', new ItemStack(Blocks.SAND, 1, redMetadata));
   }
 
   @Override

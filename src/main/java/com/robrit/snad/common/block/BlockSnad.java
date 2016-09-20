@@ -19,6 +19,9 @@
 
 package com.robrit.snad.common.block;
 
+import java.util.List;
+import java.util.Random;
+
 import com.robrit.snad.common.item.IMetaBlockSnad;
 import com.robrit.snad.common.util.ConfigurationData;
 
@@ -29,24 +32,21 @@ import net.minecraft.block.BlockReed;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.properties.PropertyEnum;
-import net.minecraft.block.state.BlockState;
+import net.minecraft.block.state.BlockStateContainer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.IStringSerializable;
-import net.minecraft.util.MovingObjectPosition;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.common.EnumPlantType;
 import net.minecraftforge.common.IPlantable;
-
-import java.util.List;
-import java.util.Random;
 
 public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
 
@@ -54,11 +54,11 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
       PropertyEnum.create("variant", BlockSnad.EnumType.class);
 
   public BlockSnad() {
-    super(Material.sand);
+    super(Material.SAND);
     setTickRandomly(true);
     setHardness(0.5F);
-    setStepSound(net.minecraft.block.Block.soundTypeSand);
-    setCreativeTab(CreativeTabs.tabMisc);
+    setSoundType(blockSoundType.SAND);
+    setCreativeTab(CreativeTabs.MISC);
     setUnlocalizedName("snad");
     setDefaultState(blockState.getBaseState().withProperty(VARIANT, EnumType.SAND));
   }
@@ -84,8 +84,8 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
   }
 
   @Override
-  protected BlockState createBlockState() {
-    return new BlockState(this, VARIANT);
+  protected BlockStateContainer createBlockState() {
+    return new BlockStateContainer(this, VARIANT);
   }
 
   @Override
@@ -96,8 +96,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
   }
 
   @Override
-  public ItemStack getPickBlock(MovingObjectPosition target, World world, BlockPos pos,
-                                EntityPlayer player) {
+  public ItemStack getPickBlock(IBlockState state, RayTraceResult target, World world, BlockPos pos, EntityPlayer player){
     return new ItemStack(Item.getItemFromBlock(this), 1,
                          getMetaFromState(world.getBlockState(pos)));
   }
@@ -142,7 +141,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
   }
 
   private void checkFallable(World worldIn, BlockPos pos) {
-    if (canFallInto(worldIn, pos.down()) && pos.getY() >= 0) {
+    if (canFallThrough(worldIn.getBlockState(pos.down())) && pos.getY() >= 0) {
       int i = 32;
 
       if (!fallInstantly && worldIn.isAreaLoaded(pos.add(-i, -i, -i), pos.add(i, i, i))) {
@@ -158,7 +157,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
         worldIn.setBlockToAir(pos);
         BlockPos blockpos;
 
-        for (blockpos = pos.down(); canFallInto(worldIn, blockpos) && blockpos.getY() > 0;
+        for (blockpos = pos.down(); canFallThrough(worldIn.getBlockState(pos.down())) && blockpos.getY() > 0;
              blockpos = blockpos.down()) {
           ;
         }
@@ -171,8 +170,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
   }
 
   @Override
-  public boolean canSustainPlant(IBlockAccess world, BlockPos pos, EnumFacing direction,
-                                 IPlantable plantable) {
+  public boolean canSustainPlant(IBlockState state, IBlockAccess world, BlockPos pos, EnumFacing direction, net.minecraftforge.common.IPlantable plantable) {
     BlockPos plantPos = new BlockPos(pos.getX(), pos.getY() + 1, pos.getZ());
     Block plant = plantable.getPlant(world, plantPos).getBlock();
     EnumPlantType plantType = plantable.getPlantType(world, plantPos);
@@ -182,18 +180,18 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
         return true;
       }
       case Water: {
-        return world.getBlockState(pos).getBlock().getMaterial() == Material.water &&
+        return world.getBlockState(pos).getBlock().getMaterial(world.getBlockState(pos)) == Material.WATER &&
                world.getBlockState(pos) == getDefaultState();
       }
       case Beach: {
         return (world.getBlockState(new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ())).getBlock()
-                    .getMaterial() == Material.water ||
+                    .getMaterial(world.getBlockState(new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ()))) == Material.WATER ||
                 world.getBlockState(new BlockPos(pos.getX() + 1, pos.getY(), pos.getZ())).getBlock()
-                    .getMaterial() == Material.water ||
+                    .getMaterial(world.getBlockState(new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ()))) == Material.WATER ||
                 world.getBlockState(new BlockPos(pos.getX(), pos.getY(), pos.getZ() - 1)).getBlock()
-                    .getMaterial() == Material.water ||
+                    .getMaterial(world.getBlockState(new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ()))) == Material.WATER ||
                 world.getBlockState(new BlockPos(pos.getX(), pos.getY(), pos.getZ() + 1)).getBlock()
-                    .getMaterial() == Material.water);
+                    .getMaterial(world.getBlockState(new BlockPos(pos.getX() - 1, pos.getY(), pos.getZ()))) == Material.WATER);
       }
     }
 
@@ -206,8 +204,8 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
   }
 
   public enum EnumType implements IStringSerializable {
-    SAND(0, "snad", "default", MapColor.sandColor),
-    RED_SAND(1, "red_snad", "red", MapColor.adobeColor);
+    SAND(0, "snad", "default", MapColor.SAND),
+    RED_SAND(1, "red_snad", "red", MapColor.ADOBE);
 
     private static final BlockSnad.EnumType[] META_LOOKUP = new BlockSnad.EnumType[values().length];
     private final int meta;
