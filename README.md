@@ -1,4 +1,4 @@
-##Snad - Minecraft Mod
+## Snad - Minecraft Mod
 
 [Compiling Snad](#compiling-snad) - For those that want the latest unreleased features.
 
@@ -8,7 +8,7 @@
 
 [Contact Me](#contact-me) - Places you can either find or contact me.
 
-###Compiling Snad
+### Compiling Snad
 IMPORTANT: Please report any issues you have, there might be some problems with the documentation!
 Also make sure you know EXACTLY what you're doing!  It's not any of our faults if your OS crashes, becomes corrupted, etc.
 ***
@@ -24,7 +24,7 @@ Also make sure you know EXACTLY what you're doing!  It's not any of our faults i
 
 [Updating Your Repository](#updating-your-repository)
 
-####Setup Java
+#### Setup Java
 The Java JDK is used to compile Snad.
 
 1. Download and install the Java JDK.
@@ -44,7 +44,7 @@ The Java JDK is used to compile Snad.
     * Append `;%JAVA_HOME%\bin` EXACTLY AS SHOWN and click `Ok`.  Make sure the location is correct; double-check just to make sure.
 3. Open up your command line and run `javac`.  If it spews out a bunch of possible options and the usage, then you're good to go.  If not try the steps again or contact TheRoBrit on Twitter [TheRoBrit's Twitter](https://twitter.com/TheRoBrit).
 
-####Setup Gradle
+#### Setup Gradle
 Gradle is used to execute the various build tasks when compiling Snad.
 
 1. Download and install Gradle.
@@ -62,13 +62,13 @@ Gradle is used to execute the various build tasks when compiling Snad.
 	* Scroll down to `Path` again, and append `;%GRADLE_HOME%\bin` EXACTLY AS SHOWN and click `Ok`.  Once again, double-check the location.
 3. Open up your command line and run `gradle`.  If it says "Welcome to Gradle [version].", then you're good to go.  If not, either try the steps again or check the [FAQ](https://github.com/TheRoBrit/Snad/wiki/Frequently-Asked-Questions).
 
-####Setup Git
+#### Setup Git
 Git is used to clone Snad and update your local copy.
 
 1. Download and install Git [here](http://git-scm.com/download/).
 	* *Optional*: Download and install a Git GUI client, such as Github for Windows/Mac, SmartGitHg, TortoiseGit, etc.  A nice list is available [here](http://git-scm.com/downloads/guis).
 
-####Setup Snad
+#### Setup Snad
 This section assumes that you're using the command-line version of Git.
 
 1. Open up your command line.
@@ -82,16 +82,16 @@ This section assumes that you're using the command-line version of Git.
 		\-Snad's files (should have `build.gradle`)
 ***
 
-####Compile Snad
+#### Compile Snad
 1. Execute `gradle setupCiWorkspace`. This sets up Forge and downloads the necessary libraries to build Snad.  This might take some time, be patient.
 	* You will generally only have to do this once until the Forge version in `build.properties` changes.
 2. Execute `gradle build`. If you did everything right, `BUILD SUCCESSFUL` will be displayed after it finishes.  This should be relatively quick.
     * If you see `BUILD FAILED`, check the error output (it should be right around `BUILD FAILED`), fix everything (if possible), and try again.
 3. Navigate to `mcdev\Snad\build\libs`.
-    *  You should see a `.jar` file similar to 'Snad-1.7.10-1.4.12.09a.jar`.
+    *  You should see a `.jar` file similar to `Snad-1.7.10-1.4.12.09a.jar`.
 4. Copy the jar into your Minecraft mods folder, and you are done!
 
-####Updating Your Repository
+#### Updating Your Repository
 In order to get the most up-to-date builds, you'll have to periodically update your local repository.
 
 1. Open up your command line.
@@ -100,9 +100,9 @@ In order to get the most up-to-date builds, you'll have to periodically update y
 	* If you have, try reverting them to the status that they were when you last updated your repository.
 4. Execute `git pull master`.  This pulls all commits from the official repository that do not yet exist on your local repository and updates it.
 
-###Contributing
+### Contributing
 ***
-####Submitting a PR
+#### Submitting a PR
 So you found a bug in TheRoBrit's code?  Think you can make it more efficient?  Want to help in general?  Great!
 
 1. If you haven't already, create a Github account.
@@ -113,7 +113,7 @@ So you found a bug in TheRoBrit's code?  Think you can make it more efficient?  
 5. Click `Click to create a pull request for this comparison`, enter your PR's title, and create a detailed description telling TheRoBrit what you changed.
 6. Click `Send pull request`, and wait for feedback!
 
-####Creating an Issue
+#### Creating an Issue
 Snad crashes on launch?  Have a suggestion?  Found a bug?  Create an issue now!
 
 1. Make sure your issue hasn't already been answered or fixed.  Also think about whether your issue is a valid one before submitting it.
@@ -128,7 +128,7 @@ Snad crashes on launch?  Have a suggestion?  Found a bug?  Create an issue now!
 		* Detailed description of the bug and pictures if applicable
 5. Click `Submit new issue`, and wait for feedback!
 
-####Credits
+#### Credits
 Here are a list of some of the people/person(s) that I'd like to thank for helping me out.
 
 * KiwiFails - For the idea of the mod.
@@ -139,7 +139,7 @@ If you feel like you've been left out, deal with it...
 
 Just kidding, feel free to contact me and let me know. I likely missed you out by accident.
 
-####Contact Me
+#### Contact Me
 Here are some of the places you can find/contact me:
 * [Twitch](http://twitch.tv/TheRoBrit)
 * [Twitter](https://twitter.com/TheRoBrit)
