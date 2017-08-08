@@ -87,7 +87,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
   }
 
   @Override
-  public MapColor getMapColor(IBlockState state) {
+  public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     return state.getValue(VARIANT).getMapColor();
   }
 
