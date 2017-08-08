@@ -1,0 +1,17 @@
+{
+	"type": "minecraft:crafting_shaped",
+	"pattern": [
+		"S",
+		"S"
+	],
+	"key": {
+		"S": {	
+			"item": "minecraft:sand",
+			"data": 1
+		}
+	},
+	"result": {
+		"item": "snad:snad",
+		"data": 1
+	}
+}
