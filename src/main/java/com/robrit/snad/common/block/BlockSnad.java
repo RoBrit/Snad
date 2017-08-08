@@ -71,11 +71,6 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
     setDefaultState(blockState.getBaseState().withProperty(VARIANT, EnumType.SNAD));
 
     setRegistryName(new ResourceLocation(ModInformation.MOD_ID, BLOCK_IDENTIFIER));
-    registerItemForm();
-  }
-
-  public void registerItemForm() {
-    GameRegistry.register(new ItemBlockSnadMeta(this), getRegistryName());
   }
 
   @Override
