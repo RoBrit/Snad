@@ -36,7 +36,6 @@ public abstract class CommonProxy implements IProxy {
 
   @Override
   public void registerBlocks() {
-    GameRegistry.register(blockSnad);
   }
 
   @Override

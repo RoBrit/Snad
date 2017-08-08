@@ -58,8 +58,6 @@ public class Snad {
     ConfigurationHandler.init();
     ConfigurationHandler.updateConfiguration();
 
-    proxy.registerBlocks();
-
     if (event.getSide() == Side.CLIENT) {
       proxy.registerBlockModels();
     }
