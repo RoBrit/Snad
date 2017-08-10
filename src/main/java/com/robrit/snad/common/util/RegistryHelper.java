@@ -1,6 +1,5 @@
 package com.robrit.snad.common.util;
 
-import com.robrit.snad.common.Snad;
 import com.robrit.snad.common.item.ItemBlockSnadMeta;
 import com.robrit.snad.common.proxy.CommonProxy;
 import net.minecraft.block.Block;
