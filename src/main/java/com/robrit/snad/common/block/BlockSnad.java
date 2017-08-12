@@ -87,11 +87,13 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
   }
 
   @Override
+  @Deprecated
   public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     return state.getValue(VARIANT).getMapColor();
   }
 
   @Override
+  @Deprecated
   public IBlockState getStateFromMeta(int meta) {
     return getDefaultState().withProperty(VARIANT, BlockSnad.EnumType.byMetadata(meta));
   }
