@@ -36,19 +36,10 @@ public abstract class CommonProxy implements IProxy {
 
   @Override
   public void registerBlocks() {
-    GameRegistry.register(blockSnad);
   }
 
   @Override
   public void registerRecipes() {
-    int regularMetadata = BlockSnad.EnumType.SNAD.getMetadata();
-    int redMetadata = BlockSnad.EnumType.RED_SNAD.getMetadata();
-
-    GameRegistry.addRecipe(new ItemStack(blockSnad, 1, regularMetadata),
-                           "S", "S", 'S', new ItemStack(Blocks.SAND, 1, regularMetadata));
-
-    GameRegistry.addRecipe(new ItemStack(blockSnad, 1, redMetadata),
-                           "S", "S", 'S', new ItemStack(Blocks.SAND, 1, redMetadata));
   }
 
   @Override

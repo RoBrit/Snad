@@ -20,7 +20,22 @@
 package com.robrit.snad.client.proxy;
 
 import com.robrit.snad.common.proxy.CommonProxy;
+import net.minecraft.client.renderer.block.model.ModelResourceLocation;
+import net.minecraft.item.Item;
+import net.minecraftforge.client.event.ModelRegistryEvent;
+import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.relauncher.Side;
 
+@Mod.EventBusSubscriber(Side.CLIENT)
 public class ClientProxy extends CommonProxy {
+
+  @SubscribeEvent
+  public static void registerModels(ModelRegistryEvent event) {
+    Item itemBlockSnad = Item.getItemFromBlock(CommonProxy.blockSnad);
+    ModelLoader.setCustomModelResourceLocation(itemBlockSnad, 0, new ModelResourceLocation("snad:snad", "inventory"));
+    ModelLoader.setCustomModelResourceLocation(itemBlockSnad, 1, new ModelResourceLocation("snad:red_snad", "inventory"));
+  }
 
 }

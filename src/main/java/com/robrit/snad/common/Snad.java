@@ -58,8 +58,6 @@ public class Snad {
     ConfigurationHandler.init();
     ConfigurationHandler.updateConfiguration();
 
-    proxy.registerBlocks();
-
     if (event.getSide() == Side.CLIENT) {
       proxy.registerBlockModels();
     }
@@ -72,8 +70,6 @@ public class Snad {
 
   @Mod.EventHandler
   public static void init(FMLInitializationEvent event) {
-    proxy.registerRecipes();
-
     if (ModInformation.DEBUG_MODE) {
       LogHelper.info(String.format("Finished initialisation stage for %s",
                                    ModInformation.MOD_ID));

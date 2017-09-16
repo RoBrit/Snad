@@ -25,6 +25,7 @@ import net.minecraftforge.fml.common.FMLLog;
 
 public class LogHelper {
 
+  @SuppressWarnings("deprecation")
   public static void log(Level logLevel, Object object) {
     FMLLog.log(ModInformation.MOD_NAME, logLevel, String.valueOf(object));
   }

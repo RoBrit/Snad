@@ -71,11 +71,6 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
     setDefaultState(blockState.getBaseState().withProperty(VARIANT, EnumType.SNAD));
 
     setRegistryName(new ResourceLocation(ModInformation.MOD_ID, BLOCK_IDENTIFIER));
-    registerItemForm();
-  }
-
-  public void registerItemForm() {
-    GameRegistry.register(new ItemBlockSnadMeta(this), getRegistryName());
   }
 
   @Override
@@ -85,18 +80,20 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
 
   @SideOnly(Side.CLIENT)
   @Override
-  public void getSubBlocks(Item itemIn, CreativeTabs tab, NonNullList<ItemStack> list) {
+  public void getSubBlocks(CreativeTabs tab, NonNullList<ItemStack> list) {
     for (BlockSnad.EnumType blockType : BlockSnad.EnumType.values()) {
-      list.add(new ItemStack(itemIn, 1, blockType.getMetadata()));
+      list.add(new ItemStack(this, 1, blockType.getMetadata()));
     }
   }
 
   @Override
-  public MapColor getMapColor(IBlockState state) {
+  @Deprecated
+  public MapColor getMapColor(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
     return state.getValue(VARIANT).getMapColor();
   }
 
   @Override
+  @Deprecated
   public IBlockState getStateFromMeta(int meta) {
     return getDefaultState().withProperty(VARIANT, BlockSnad.EnumType.byMetadata(meta));
   }
@@ -126,9 +123,7 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
 
   @Override
   public void updateTick(World world, BlockPos pos, IBlockState state, Random rand) {
-    if (!world.isRemote) {
-      checkFallable(world, pos);
-    }
+    super.updateTick(world, pos, state, rand);
 
     Block blockAbove = world.getBlockState(pos.up()).getBlock();
 
@@ -158,36 +153,6 @@ public class BlockSnad extends BlockFalling implements IMetaBlockSnad {
       }
     } else if (blockAbove instanceof IPlantable) {
       blockAbove.updateTick(world, pos.up(), world.getBlockState(pos.up()), rand);
-    }
-
-  }
-
-  private void checkFallable(World worldIn, BlockPos pos) {
-    if ((worldIn.isAirBlock(pos.down()) ||
-         canFallThrough(worldIn.getBlockState(pos.down()))) && pos.getY() >= 0) {
-      if (!fallInstantly && worldIn.isAreaLoaded(pos.add(-32, -32, -32), pos.add(32, 32, 32))) {
-        if (!worldIn.isRemote) {
-          final EntityFallingBlock entityfallingblock =
-              new EntityFallingBlock(worldIn, (double) pos.getX() + 0.5D, (double) pos.getY(),
-                                     (double) pos.getZ() + 0.5D, worldIn.getBlockState(pos));
-          onStartFalling(entityfallingblock);
-          worldIn.spawnEntity(entityfallingblock);
-        }
-      } else {
-        IBlockState state = worldIn.getBlockState(pos);
-        worldIn.setBlockToAir(pos);
-        BlockPos blockpos;
-
-        for (blockpos = pos.down();
-             (worldIn.isAirBlock(blockpos) || canFallThrough(worldIn.getBlockState(blockpos)))
-             && blockpos.getY() > 0; blockpos = blockpos.down()) {
-          //NOOP
-        }
-
-        if (blockpos.getY() > 0) {
-          worldIn.setBlockState(blockpos.up(), state);
-        }
-      }
     }
   }
 
