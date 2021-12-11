@@ -1,6 +1,21 @@
 {
   "variants": {
-    "variant=red_snad": { "model":"minecraft:red_sand" },
-    "variant=snad": { "model":"minecraft:sand" }
+    "": [
+      {
+        "model": "snad:block/snad"
+      },
+      {
+        "model": "snad:block/snad",
+        "y": 90
+      },
+      {
+        "model": "snad:block/snad",
+        "y": 180
+      },
+      {
+        "model": "snad:block/snad",
+        "y": 270
+      }
+    ]
   }
 }

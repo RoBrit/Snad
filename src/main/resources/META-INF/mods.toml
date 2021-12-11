@@ -1,0 +1,10 @@
+modLoader="javafml"
+loaderVersion="[39,)"
+license="All rights reserved"
+[[mods]]
+modId="snad"
+version="${file.jarVersion}"
+displayName="Snad"
+logoFile="logo.png"
+authors="RoBrit"
+description="You're finally able to have your sugarcane grow faster. What could possibly be better than that?"
