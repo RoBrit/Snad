@@ -67,11 +67,11 @@ public class SnadBlock extends FallingBlock {
 
             while (isSameBlockType) {
                 if (blockPos.above(height).getY() < serverLevel.getMaxBuildHeight()) {
-                    final Block nextBlock = serverLevel.getBlockState(blockPos.above(height)).getBlock();
+                    final BlockState nextBlockState = serverLevel.getBlockState(blockPos.above(height));
 
-                    if (nextBlock.getClass() == blockAbove.getClass()) {
+                    if (nextBlockState.is(blockAbove)) {
                         for (int growthAttempts = 0; growthAttempts < ConfigRegistry.GROWTH_SPEED.get(); growthAttempts++) {
-                            nextBlock.randomTick(serverLevel.getBlockState(blockPos.above(height)), serverLevel, blockPos.above(height), random);
+                            nextBlockState.randomTick(serverLevel, blockPos.above(height), random);
                         }
 
                         height++;
