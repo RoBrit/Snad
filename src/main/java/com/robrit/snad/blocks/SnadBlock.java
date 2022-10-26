@@ -8,6 +8,7 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.BonemealableBlock;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
@@ -61,7 +62,7 @@ public class SnadBlock extends FallingBlock {
     public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, Random random) {
         final Block blockAbove = serverLevel.getBlockState(blockPos.above()).getBlock();
 
-        if (blockAbove instanceof IPlantable) {
+        if (blockAbove instanceof IPlantable || blockAbove instanceof BonemealableBlock) {
             boolean isSameBlockType = true;
             int height = 1;
 
