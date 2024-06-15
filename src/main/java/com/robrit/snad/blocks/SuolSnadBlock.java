@@ -1,17 +1,18 @@
 package com.robrit.snad.blocks;
 
-import com.robrit.snad.config.ConfigRegistry;
+import com.robrit.snad.Snad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.IPlantable;
 import net.minecraftforge.common.PlantType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Random;
 
 public class SuolSnadBlock extends Block {
     public SuolSnadBlock(Properties properties) {
@@ -26,26 +27,32 @@ public class SuolSnadBlock extends Block {
 
     @Override
     @ParametersAreNonnullByDefault
-    public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, Random random) {
+    @SuppressWarnings("deprecation")
+    public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
         this.tick(blockState, serverLevel, blockPos, random);
     }
 
     @Override
     @ParametersAreNonnullByDefault
-    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, Random random) {
-        final Block blockAbove = serverLevel.getBlockState(blockPos.above()).getBlock();
+    @SuppressWarnings("deprecation")
+    public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
+        acceleratedTick(serverLevel, blockPos, random);
+    }
 
-        if (blockAbove instanceof IPlantable) {
+    public static void acceleratedTick(ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
+        final BlockState blockAbove = serverLevel.getBlockState(blockPos.above());
+
+        if (blockAbove.getBlock() instanceof IPlantable || blockAbove.is(Blocks.BAMBOO_SAPLING) || blockAbove.is(Blocks.BAMBOO)) {
             boolean isSameBlockType = true;
             int height = 1;
 
             while (isSameBlockType) {
                 if (blockPos.above(height).getY() < serverLevel.getMaxBuildHeight()) {
-                    final Block nextBlock = serverLevel.getBlockState(blockPos.above(height)).getBlock();
+                    final BlockState nextBlock = serverLevel.getBlockState(blockPos.above(height));
 
-                    if (nextBlock.getClass() == blockAbove.getClass()) {
-                        for (int growthAttempts = 0; growthAttempts < ConfigRegistry.GROWTH_SPEED.get(); growthAttempts++) {
-                            nextBlock.randomTick(serverLevel.getBlockState(blockPos.above(height)), serverLevel, blockPos.above(height), random);
+                    if (nextBlock.is(blockAbove.getBlock())) {
+                        for (int growthAttempts = 0; growthAttempts < Snad.config().getGrowthSpeed(); growthAttempts++) {
+                            nextBlock.randomTick(serverLevel, blockPos.above(height), random);
                         }
 
                         height++;

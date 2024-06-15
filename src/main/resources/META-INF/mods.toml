@@ -1,10 +1,28 @@
 modLoader="javafml"
-loaderVersion="[39,)"
+loaderVersion="${loader_version}"
 license="All rights reserved"
+issueTrackerURL="https://github.com/RoBrit/Snad/issues"
+
 [[mods]]
-modId="snad"
-version="${file.jarVersion}"
+modId="${mod_id}"
+version="${version}"
 displayName="Snad"
 logoFile="logo.png"
 authors="RoBrit"
+displayURL="https://github.com/RoBrit/Snad"
 description="You're finally able to have your sugarcane grow faster. What could possibly be better than that?"
+
+[[dependencies.${mod_id}]]
+modId="forge"
+mandatory=true
+versionRange="${forge_version_range}"
+ordering="NONE"
+side="BOTH"
+
+[[dependencies.${mod_id}]]
+modId="minecraft"
+mandatory=true
+versionRange="${minecraft_version_range}"
+ordering="NONE"
+side="BOTH"
+

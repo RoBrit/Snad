@@ -1,69 +1,59 @@
-apply plugin: 'net.minecraftforge.gradle'
-apply plugin: 'maven-publish'
-
-buildscript {
-    repositories {
-        // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
-        maven { url = 'https://maven.minecraftforge.net' }
-        mavenCentral()
-    }
-    dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-    }
+plugins {
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.minecraftforge.gradle' version '[6.0,6.2)'
+    id "me.modmuss50.mod-publish-plugin" version "0.5.1"
 }
 
-archivesBaseName = 'Snad' // Mod ID
-group = 'com.robrit.snad' // Mod Package
-version = "${minecraft_version}-${mod_version}" // Mod Version
+apply {
+    // "Simple" fix for M1 (Apple Silicon) macs in the dev environment... All thanks to @mezz
+    from "https://raw.githubusercontent.com/mezz/JustEnoughItems/1.18/Forge/buildtools/AppleSiliconSupport.gradle"
+}
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+def mcBase = getMinecraftBaseVersion()
+
+group = 'com.robrit'
+version = "${mcBase}.${mod_version}"
+
+base {
+    archivesName = "Snad"
+}
+
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
-println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 
 minecraft {
-    mappings channel: 'official', version: '1.18.1'
+    mappings channel: 'official', version: project.minecraft_version
+
+    copyIdeResources = true
 
     runs {
-        client {
+        configureEach {
             workingDirectory project.file('run')
 
             property 'forge.logging.markers', 'REGISTRIES'
             property 'forge.logging.console.level', 'debug'
+            property 'forge.enabledGameTestNamespaces', mod_id
 
             mods {
-                snad {
+                "${mod_id}" {
                     source sourceSets.main
                 }
             }
+        }
+
+        client {
+            property 'forge.enabledGameTestNamespaces', mod_id
         }
 
         server {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            mods {
-                snad {
-                    source sourceSets.main
-                }
-            }
+            property 'forge.enabledGameTestNamespaces', mod_id
+            args '--nogui'
         }
 
         data {
-            workingDirectory project.file('run')
-
-            property 'forge.logging.markers', 'REGISTRIES'
-            property 'forge.logging.console.level', 'debug'
-
-            // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-            args '--mod', 'examplemod', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
-
-            mods {
-                snad {
-                    source sourceSets.main
-                }
-            }
+            workingDirectory project.file('run-data')
+            args '--mod', mod_id, '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
         }
     }
 }
@@ -92,19 +82,87 @@ jar {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+
+    finalizedBy 'reobfJar'
 }
 
-jar.finalizedBy('reobfJar')
+
+
+tasks.named('processResources', ProcessResources).configure {
+    var replaceProperties = [
+            minecraft_version: minecraft_version,
+            minecraft_version_range: minecraft_version_range,
+            forge_version_range: forge_version_range,
+            loader_version: loader_version,
+            mod_id: mod_id,
+            version: project.version,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
+        expand replaceProperties + [project: project]
+    }
+}
 
 publishing {
     publications {
-        mavenJava(MavenPublication) {
+        register('mavenJava', MavenPublication) {
             artifact jar
         }
     }
+
     repositories {
-        maven {
-            url "file://${project.projectDir}/mcmodsrepo"
+        def actor = providers.environmentVariable("GITHUB_ACTOR")
+        if (actor.isPresent()) {
+            maven {
+                name = "GitHubPackages"
+                url = "https://maven.pkg.github.com/Direwolf20-MC/BuildingGadgets"
+                credentials {
+                    username = actor.get()
+                    password = providers.environmentVariable("GITHUB_TOKEN").get()
+                }
+            }
         }
     }
 }
+
+publishMods {
+    dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
+    changelog = file("./CHANGELOG.md").text
+    version = project.version
+    file = project.provider { project.tasks.jar }.flatMap { it.archiveFile }
+    modLoaders.add("forge")
+    type = STABLE
+    displayName = "[${minecraft_version}] ${base.archivesName.get()} ${project.version}"
+
+    curseforge {
+        projectId = curseforge_id
+        accessToken = providers.environmentVariable("CURSE_TOKEN")
+        minecraftVersions.add("${minecraft_version}")
+        javaVersions.add(JavaVersion.VERSION_17)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+}
+
+//#region helpers
+/**
+ * Removes the 1. from Minecraft's version, then adds a 0 to the end if the
+ * version does not contain three dots.
+ */
+def getMinecraftBaseVersion() {
+    def version = project.minecraft_version
+    def parts = version.split("\\.")
+
+    // Remove the first part of the version
+    parts = parts[1..-1]
+
+    if (parts.size() < 2) {
+        parts << "0"
+    }
+
+    return parts.join(".")
+}
+//#endregion

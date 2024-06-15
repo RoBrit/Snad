@@ -24,3 +24,5 @@
 /*.iws
 /atlassian-ide-plugin.xml
 *.launch
+
+run-data
