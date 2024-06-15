@@ -1,6 +1,5 @@
 package com.robrit.snad;
 
-import com.electronwill.nightconfig.core.CommentedConfig;
 import com.electronwill.nightconfig.core.ConfigSpec;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import net.minecraftforge.fml.loading.FMLPaths;
