@@ -104,28 +104,28 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-publishing {
-    publications {
-        register('mavenJava', MavenPublication) {
-            artifact jar
-//            artifactId = project.name.toLowerCase()
-        }
-    }
-
-    repositories {
-        def actor = providers.environmentVariable("GITHUB_ACTOR")
-        if (actor.isPresent()) {
-            maven {
-                name = "GitHubPackages"
-                url = "https://maven.pkg.github.com/RoBrit/Snad"
-                credentials {
-                    username = actor.get()
-                    password = providers.environmentVariable("GITHUB_TOKEN").get()
-                }
-            }
-        }
-    }
-}
+//publishing {
+//    publications {
+//        register('mavenJava', MavenPublication) {
+//            artifact jar
+////            artifactId = project.name.toLowerCase()
+//        }
+//    }
+//
+//    repositories {
+//        def actor = providers.environmentVariable("GITHUB_ACTOR")
+//        if (actor.isPresent()) {
+//            maven {
+//                name = "GitHubPackages"
+//                url = "https://maven.pkg.github.com/RoBrit/Snad"
+//                credentials {
+//                    username = actor.get()
+//                    password = providers.environmentVariable("GITHUB_TOKEN").get()
+//                }
+//            }
+//        }
+//    }
+//}
 
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
