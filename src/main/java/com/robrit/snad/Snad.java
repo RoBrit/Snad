@@ -7,11 +7,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 @Mod("snad")
 public class Snad {
@@ -19,12 +18,11 @@ public class Snad {
 
     public static final TagKey<Block> SNAD_BLOCKS = TagKey.create(Registries.BLOCK, snadId("snad"));
 
-    public Snad() {
-        BlockRegistry.init();
-        ItemRegistry.init();
+    public Snad(IEventBus eventBus) {
+        BlockRegistry.init(eventBus);
+        ItemRegistry.init(eventBus);
 
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        modEventBus.addListener(Snad::registerCreativeTab);
+        eventBus.addListener(Snad::registerCreativeTab);
     }
 
     @SubscribeEvent
@@ -34,9 +32,9 @@ public class Snad {
             return;
         }
 
-        event.accept(BlockRegistry.SNAD);
-        event.accept(BlockRegistry.RED_SNAD);
-        event.accept(BlockRegistry.SUOL_SNAD);
+        event.accept(BlockRegistry.SNAD.get());
+        event.accept(BlockRegistry.RED_SNAD.get());
+        event.accept(BlockRegistry.SUOL_SNAD.get());
     }
 
     public static SnadConfig config() {

@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_sand",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_sand"
     ]
   ],
   "rewards": {
     "recipes": [
       "snad:snad"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -1,5 +1,5 @@
-## [20.1.0]
+## [20.4.0]
 
 ### Changed
 
-- Updated to `1.20.1`
+- Updated to `1.20.4`
