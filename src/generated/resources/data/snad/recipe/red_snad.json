@@ -3,13 +3,14 @@
   "category": "building",
   "ingredients": [
     {
-      "item": "minecraft:sand"
+      "item": "minecraft:red_sand"
     },
     {
-      "item": "minecraft:sand"
+      "item": "minecraft:red_sand"
     }
   ],
   "result": {
-    "item": "snad:snad"
+    "count": 1,
+    "id": "snad:red_snad"
   }
 }

@@ -3,13 +3,14 @@
   "category": "building",
   "ingredients": [
     {
-      "item": "minecraft:red_sand"
+      "item": "minecraft:soul_sand"
     },
     {
-      "item": "minecraft:red_sand"
+      "item": "minecraft:soul_sand"
     }
   ],
   "result": {
-    "item": "snad:red_snad"
+    "count": 1,
+    "id": "snad:suol_snad"
   }
 }

@@ -1,5 +1,8 @@
 package com.robrit.snad.blocks;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -9,12 +12,17 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.FallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.IPlantable;
-import net.minecraftforge.common.PlantType;
+import net.neoforged.neoforge.common.IPlantable;
+import net.neoforged.neoforge.common.PlantType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 public class SnadBlock extends FallingBlock {
+    public static final MapCodec<SnadBlock> CODEC = RecordCodecBuilder.mapCodec(
+            instance -> instance.group(Codec.INT.fieldOf("dust_color").forGetter(e -> e.dustColor), propertiesCodec())
+                    .apply(instance, SnadBlock::new)
+    );
+
     private final int dustColor;
 
     public SnadBlock(int dustColor, Properties properties) {
@@ -53,6 +61,11 @@ public class SnadBlock extends FallingBlock {
     @SuppressWarnings("deprecation")
     public void randomTick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
         this.tick(blockState, serverLevel, blockPos, random);
+    }
+
+    @Override
+    protected MapCodec<? extends FallingBlock> codec() {
+        return CODEC;
     }
 
     @Override

@@ -2,31 +2,29 @@ package com.robrit.snad;
 
 import com.robrit.snad.blocks.BlockRegistry;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.client.model.generators.BlockStateProvider;
-import net.minecraftforge.client.model.generators.ItemModelProvider;
-import net.minecraftforge.common.data.BlockTagsProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.common.data.LanguageProvider;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
+import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.data.BlockTagsProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.common.data.LanguageProvider;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 
-@Mod.EventBusSubscriber(modid = Snad.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Snad.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class SnadData {
 
     @SubscribeEvent
@@ -42,7 +40,7 @@ public class SnadData {
         }
 
         if (event.includeServer()) {
-            generator.addProvider(true, new Recipes(packOutput));
+            generator.addProvider(true, new Recipes(packOutput, event.getLookupProvider()));
             generator.addProvider(true, new TagGenerator(packOutput, event.getLookupProvider(), existingFileHelper));
         }
     }
@@ -82,27 +80,27 @@ public class SnadData {
         protected void addTags(HolderLookup.Provider provider) {
             this.tag(Snad.SNAD_BLOCKS).add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get(), BlockRegistry.SUOL_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("cactus_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("cactus_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("nether_wart_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("nether_wart_plantable_on")))
                     .add(BlockRegistry.SUOL_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("sugar_cane_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("sugar_cane_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("bamboo_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("bamboo_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
         }
     }
 
     public static final class Recipes extends RecipeProvider {
-        public Recipes(PackOutput output) {
-            super(output);
+        public Recipes(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
+            super(pOutput, pRegistries);
         }
 
         @Override
-        protected void buildRecipes(Consumer<FinishedRecipe> consumer) {
+        protected void buildRecipes(RecipeOutput consumer) {
             ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.RED_SNAD.get())
                     .requires(Items.RED_SAND)
                     .requires(Items.RED_SAND)

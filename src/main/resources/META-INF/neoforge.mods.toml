@@ -10,18 +10,20 @@ displayName="Snad"
 logoFile="logo.png"
 authors="RoBrit"
 displayURL="https://github.com/RoBrit/Snad"
-description="You're finally able to have your sugarcane grow faster. What could possibly be better than that?"
+description="""
+You're finally able to have your sugarcane grow faster. What could possibly be better than that?
+"""
 
 [[dependencies.${mod_id}]]
-modId="forge"
-mandatory=true
+modId="neoforge"
+required=true
 versionRange="${forge_version_range}"
 ordering="NONE"
 side="BOTH"
 
 [[dependencies.${mod_id}]]
 modId="minecraft"
-mandatory=true
+required=true
 versionRange="${minecraft_version_range}"
 ordering="NONE"
 side="BOTH"
