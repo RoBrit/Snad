@@ -1,5 +1,6 @@
 {
   "type": "minecraft:crafting_shapeless",
+  "category": "building",
   "ingredients": [
     {
       "item": "minecraft:red_sand"
@@ -9,7 +10,6 @@
     }
   ],
   "result": {
-    "item": "snad:red_snad",
-    "count": 1
+    "item": "snad:red_snad"
   }
 }
