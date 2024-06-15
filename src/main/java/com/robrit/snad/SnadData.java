@@ -80,16 +80,16 @@ public class SnadData {
         protected void addTags(HolderLookup.Provider provider) {
             this.tag(Snad.SNAD_BLOCKS).add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get(), BlockRegistry.SUOL_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("cactus_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("cactus_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("nether_wart_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("nether_wart_plantable_on")))
                     .add(BlockRegistry.SUOL_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("sugar_cane_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("sugar_cane_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
 
-            this.tag(TagKey.create(Registries.BLOCK, new ResourceLocation("bamboo_plantable_on")))
+            this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("bamboo_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
         }
     }

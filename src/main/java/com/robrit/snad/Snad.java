@@ -42,6 +42,6 @@ public class Snad {
     }
 
     public static ResourceLocation snadId(String path) {
-        return new ResourceLocation(MOD_ID, path);
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
     }
 }
