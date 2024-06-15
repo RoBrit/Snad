@@ -13,7 +13,7 @@ apply {
 
 def mcBase = getMinecraftBaseVersion()
 
-group = 'com.robrit'
+group = 'com.robrit.snad'
 version = "${mcBase}.${mod_version}"
 
 base {
@@ -108,6 +108,7 @@ publishing {
     publications {
         register('mavenJava', MavenPublication) {
             artifact jar
+//            artifactId = project.name.toLowerCase()
         }
     }
 
