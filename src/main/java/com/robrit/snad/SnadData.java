@@ -13,7 +13,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
@@ -24,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
 
-@Mod.EventBusSubscriber(modid = Snad.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Snad.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class SnadData {
 
     @SubscribeEvent
@@ -40,7 +40,7 @@ public class SnadData {
         }
 
         if (event.includeServer()) {
-            generator.addProvider(true, new Recipes(packOutput));
+            generator.addProvider(true, new Recipes(packOutput, event.getLookupProvider()));
             generator.addProvider(true, new TagGenerator(packOutput, event.getLookupProvider(), existingFileHelper));
         }
     }
@@ -95,8 +95,8 @@ public class SnadData {
     }
 
     public static final class Recipes extends RecipeProvider {
-        public Recipes(PackOutput output) {
-            super(output);
+        public Recipes(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
+            super(pOutput, pRegistries);
         }
 
         @Override

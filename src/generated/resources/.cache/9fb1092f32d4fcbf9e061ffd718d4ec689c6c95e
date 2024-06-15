@@ -1,7 +1,7 @@
-// 1.20.4	2024-06-15T20:07:16.828885	Recipes
-23778e0e3e501f788a656b9a7b79ece6320fe03a data/snad/advancements/recipes/building_blocks/red_snad.json
-816244d4e23128cf1ef4dfbda19ecbbdb8ea7380 data/snad/advancements/recipes/building_blocks/snad.json
-60aeb6512e8d7f74c85e02b30c351f09e6fec84a data/snad/advancements/recipes/building_blocks/suol_snad.json
-694cac8ad7a019efd477ba924a19c5f62c82c1e1 data/snad/recipes/red_snad.json
-f545d8cca304447546d29878fe8591b388412395 data/snad/recipes/snad.json
-f309ec8791c28252d38bae42ba854f878d1b7deb data/snad/recipes/suol_snad.json
+// 1.20.6	2024-06-15T20:15:47.938275	Recipes
+9f0c98c698477b7a960b7d6c8f5023e64dfdae95 data/snad/advancements/recipes/building_blocks/red_snad.json
+51699ea336f7ea3ef0c81c00f95ad5c9e5ca3ca5 data/snad/advancements/recipes/building_blocks/snad.json
+2377f51f4f8fe2fc7f4f92459bba6b7d4e92bc4c data/snad/advancements/recipes/building_blocks/suol_snad.json
+2bdc414984b668c96b9bc266230f0c0ce0952cc6 data/snad/recipes/red_snad.json
+4adc924172b1230f8f1846630c4bd9a957b78d51 data/snad/recipes/snad.json
+81468079504e6928fb198ab90cf0504b8d89cc68 data/snad/recipes/suol_snad.json
