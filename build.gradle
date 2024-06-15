@@ -116,7 +116,7 @@ publishing {
         if (actor.isPresent()) {
             maven {
                 name = "GitHubPackages"
-                url = "https://maven.pkg.github.com/Direwolf20-MC/BuildingGadgets"
+                url = "https://maven.pkg.github.com/RoBrit/Snad"
                 credentials {
                     username = actor.get()
                     password = providers.environmentVariable("GITHUB_TOKEN").get()
