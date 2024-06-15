@@ -7,7 +7,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.level.block.Block;
-import net.minecraftforge.event.CreativeModeTabEvent;
+import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -28,8 +28,8 @@ public class Snad {
     }
 
     @SubscribeEvent
-    public static void registerCreativeTab(CreativeModeTabEvent.BuildContents event) {
-        var tab = event.getTab();
+    public static void registerCreativeTab(BuildCreativeModeTabContentsEvent event) {
+        var tab = event.getTabKey();
         if (tab != CreativeModeTabs.BUILDING_BLOCKS) {
             return;
         }

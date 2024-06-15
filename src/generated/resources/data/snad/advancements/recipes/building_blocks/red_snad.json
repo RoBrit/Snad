@@ -30,5 +30,6 @@
     "recipes": [
       "snad:red_snad"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

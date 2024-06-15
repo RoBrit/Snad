@@ -30,5 +30,6 @@
     "recipes": [
       "snad:suol_snad"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }
