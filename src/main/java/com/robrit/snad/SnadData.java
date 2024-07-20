@@ -10,8 +10,10 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
@@ -91,6 +93,18 @@ public class SnadData {
 
             this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("bamboo_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
+
+            this.tag(Snad.SNAD_PLACEABLE_CROPS)
+                    .add(Blocks.BAMBOO)
+                    .add(Blocks.BAMBOO_SAPLING)
+                    .add(Blocks.CACTUS)
+                    .add(Blocks.SUGAR_CANE);
+
+            this.tag(Snad.SNAD_REQUIRES_WATER)
+                    .add(Blocks.SUGAR_CANE);
+
+            this.tag(Snad.SUOL_PLACEABLE_CROPS)
+                    .add(Blocks.NETHER_WART);
         }
     }
 

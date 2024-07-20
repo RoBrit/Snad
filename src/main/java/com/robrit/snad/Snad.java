@@ -18,6 +18,10 @@ public class Snad {
 
     public static final TagKey<Block> SNAD_BLOCKS = TagKey.create(Registries.BLOCK, snadId("snad"));
 
+    public static final TagKey<Block> SNAD_PLACEABLE_CROPS = TagKey.create(Registries.BLOCK, snadId("snad_placeable_crops"));
+    public static final TagKey<Block> SNAD_REQUIRES_WATER = TagKey.create(Registries.BLOCK, snadId("snad_requires_water"));
+    public static final TagKey<Block> SUOL_PLACEABLE_CROPS = TagKey.create(Registries.BLOCK, snadId("suol_placeable_crops"));
+
     public Snad(IEventBus eventBus) {
         BlockRegistry.init(eventBus);
         ItemRegistry.init(eventBus);

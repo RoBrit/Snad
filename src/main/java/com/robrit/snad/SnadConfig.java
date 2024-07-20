@@ -1,8 +1,10 @@
 package com.robrit.snad;
 
 import com.electronwill.nightconfig.core.ConfigSpec;
+import com.electronwill.nightconfig.core.concurrent.SynchronizedConfig;
 import com.electronwill.nightconfig.core.file.CommentedFileConfig;
 import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
 import java.nio.file.Files;
 
@@ -24,6 +26,7 @@ public class SnadConfig {
         spec.defineInRange("Movement Speed", 1.4, 1.0, 2.0);
 
         config = CommentedFileConfig.builder(configPath)
+                .sync()
                 .build();
 
         config.set("Growth Speed", 2);

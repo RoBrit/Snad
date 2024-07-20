@@ -7,10 +7,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.IPlantable;
-import net.neoforged.neoforge.common.PlantType;
+import net.neoforged.neoforge.common.util.TriState;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -20,9 +18,12 @@ public class SuolSnadBlock extends Block {
     }
 
     @Override
-    @ParametersAreNonnullByDefault
-    public boolean canSustainPlant(BlockState state, BlockGetter world, BlockPos pos, Direction facing, IPlantable plantable) {
-        return plantable.getPlantType(world, pos) == PlantType.NETHER;
+    public TriState canSustainPlant(BlockState state, BlockGetter level, BlockPos soilPosition, Direction facing, BlockState plant) {
+        if (plant.is(Snad.SUOL_PLACEABLE_CROPS)) {
+            return TriState.TRUE;
+        }
+
+        return TriState.FALSE;
     }
 
     @Override
@@ -42,26 +43,28 @@ public class SuolSnadBlock extends Block {
     public static void acceleratedTick(ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
         final BlockState blockAbove = serverLevel.getBlockState(blockPos.above());
 
-        if (blockAbove.getBlock() instanceof IPlantable || blockAbove.is(Blocks.BAMBOO_SAPLING) || blockAbove.is(Blocks.BAMBOO)) {
-            boolean isSameBlockType = true;
-            int height = 1;
+        if (!blockAbove.is(Snad.SNAD_PLACEABLE_CROPS) && !blockAbove.is(Snad.SUOL_PLACEABLE_CROPS)) {
+            return;
+        }
 
-            while (isSameBlockType) {
-                if (blockPos.above(height).getY() < serverLevel.getMaxBuildHeight()) {
-                    final BlockState nextBlock = serverLevel.getBlockState(blockPos.above(height));
+        boolean isSameBlockType = true;
+        int height = 1;
 
-                    if (nextBlock.is(blockAbove.getBlock())) {
-                        for (int growthAttempts = 0; growthAttempts < Snad.config().getGrowthSpeed(); growthAttempts++) {
-                            nextBlock.randomTick(serverLevel, blockPos.above(height), random);
-                        }
+        while (isSameBlockType) {
+            if (blockPos.above(height).getY() < serverLevel.getMaxBuildHeight()) {
+                final BlockState nextBlock = serverLevel.getBlockState(blockPos.above(height));
 
-                        height++;
-                    } else {
-                        isSameBlockType = false;
+                if (nextBlock.is(blockAbove.getBlock())) {
+                    for (int growthAttempts = 0; growthAttempts < Snad.config().getGrowthSpeed(); growthAttempts++) {
+                        nextBlock.randomTick(serverLevel, blockPos.above(height), random);
                     }
+
+                    height++;
                 } else {
                     isSameBlockType = false;
                 }
+            } else {
+                isSameBlockType = false;
             }
         }
     }
