@@ -2,5 +2,5 @@
 
 ## Changed
 
-- Updated to Neoforge version 21.1.90+
-- Updated Minecraft version to 1.21.1
+- Update to Neoforge version 21.1.90+
+- Port to Minecraft version 1.21.1
