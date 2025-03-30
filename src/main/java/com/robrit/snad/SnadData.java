@@ -1,81 +1,78 @@
 package com.robrit.snad;
 
 import com.robrit.snad.blocks.BlockRegistry;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
+import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.loot.BlockLootSubProvider;
+import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
-import net.minecraft.data.recipes.ShapelessRecipeBuilder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 
 @EventBusSubscriber(modid = Snad.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class SnadData {
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         PackOutput packOutput = generator.getPackOutput();
 
-        if (event.includeClient()) {
-            generator.addProvider(true, new Lang(packOutput));
-            generator.addProvider(true, new BlockStates(packOutput, existingFileHelper));
-            generator.addProvider(true, new ItemModels(packOutput, existingFileHelper));
-        }
+        generator.addProvider(true, new Lang(packOutput));
+        generator.addProvider(true, new BlockStates(packOutput));
+        CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
 
-        if (event.includeServer()) {
-            generator.addProvider(true, new Recipes.Runner(packOutput, event.getLookupProvider()));
-            generator.addProvider(true, new TagGenerator(packOutput, event.getLookupProvider(), existingFileHelper));
-        }
+        generator.addProvider(true, new Recipes.Runner(packOutput, lookupProvider));
+        generator.addProvider(true, new TagGenerator(packOutput, lookupProvider));
+        generator.addProvider(true, new LootTableProvider(packOutput, Set.of(), List.of(new LootTableProvider.SubProviderEntry(Loot::new, LootContextParamSets.BLOCK)), lookupProvider));
     }
 
-    public static final class ItemModels extends ItemModelProvider {
-        public ItemModels(PackOutput output, ExistingFileHelper existingFileHelper) {
-            super(output, Snad.MOD_ID, existingFileHelper);
+    public static final class BlockStates extends ModelProvider {
+        public BlockStates(PackOutput output) {
+            super(output, Snad.MOD_ID);
         }
 
         @Override
-        protected void registerModels() {
-            withExistingParent("snad", modLoc("block/snad"));
-            withExistingParent("red_snad", modLoc("block/red_snad"));
-            withExistingParent("suol_snad", modLoc("block/suol_snad"));
-        }
-    }
+        protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+            blockModels.createTrivialBlock(BlockRegistry.SNAD.get(), TexturedModel.CUBE);
+            blockModels.createTrivialBlock(BlockRegistry.RED_SNAD.get(), TexturedModel.CUBE);
+            blockModels.createTrivialBlock(BlockRegistry.SUOL_SNAD.get(), TexturedModel.CUBE);
 
-    public static final class BlockStates extends BlockStateProvider {
-        public BlockStates(PackOutput output, ExistingFileHelper exFileHelper) {
-            super(output, Snad.MOD_ID, exFileHelper);
-        }
-
-        @Override
-        protected void registerStatesAndModels() {
-            simpleBlock(BlockRegistry.SNAD.get());
-            simpleBlock(BlockRegistry.RED_SNAD.get());
-            simpleBlock(BlockRegistry.SUOL_SNAD.get());
+            // TODO: fix me
+//            itemModels.create
+//
+//            withExistingParent("snad", modLoc("block/snad"));
+//            withExistingParent("red_snad", modLoc("block/red_snad"));
+//            withExistingParent("suol_snad", modLoc("block/suol_snad"));
         }
     }
 
     public static final class TagGenerator extends BlockTagsProvider {
-        public TagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-            super(output, lookupProvider, Snad.MOD_ID, existingFileHelper);
+        public TagGenerator(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+            super(output, lookupProvider, Snad.MOD_ID);
         }
 
         @Override
@@ -162,6 +159,28 @@ public class SnadData {
             this.addBlock(BlockRegistry.RED_SNAD, "Red Snad");
             this.addBlock(BlockRegistry.SUOL_SNAD, "Suol Snad");
 
+        }
+    }
+
+    public static final class Loot extends BlockLootSubProvider {
+        private Loot(HolderLookup.Provider registries) {
+            super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
+        }
+
+        @Override
+        protected void generate() {
+            this.dropSelf(BlockRegistry.SNAD.get());
+            this.dropSelf(BlockRegistry.RED_SNAD.get());
+            this.dropSelf(BlockRegistry.SUOL_SNAD.get());
+        }
+
+        @Override
+        protected @NotNull Iterable<Block> getKnownBlocks() {
+            return List.of(
+                    BlockRegistry.SNAD.get(),
+                    BlockRegistry.RED_SNAD.get(),
+                    BlockRegistry.SUOL_SNAD.get()
+            );
         }
     }
 }

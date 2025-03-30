@@ -1,42 +1,23 @@
 package com.robrit.snad.blocks;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.robrit.snad.Snad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ColorRGBA;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.FallingBlock;
+import net.minecraft.world.level.block.ColoredFallingBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.neoforged.neoforge.common.util.TriState;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Iterator;
 
-public class SnadBlock extends FallingBlock {
-    public static final MapCodec<SnadBlock> CODEC = RecordCodecBuilder.mapCodec(
-            instance -> instance.group(Codec.INT.fieldOf("dust_color").forGetter(e -> e.dustColor), propertiesCodec())
-                    .apply(instance, SnadBlock::new)
-    );
-
-    private final int dustColor;
-
+public class SnadBlock extends ColoredFallingBlock {
     public SnadBlock(int dustColor, Properties properties) {
-        super(properties);
-        this.dustColor = dustColor;
-    }
-
-    @Override
-    @ParametersAreNonnullByDefault
-    public int getDustColor(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
-        return this.dustColor;
+        super(new ColorRGBA(dustColor), properties);
     }
 
     @Override
@@ -69,14 +50,10 @@ public class SnadBlock extends FallingBlock {
     }
 
     @Override
-    protected MapCodec<? extends FallingBlock> codec() {
-        return CODEC;
-    }
-
-    @Override
     @ParametersAreNonnullByDefault
     @SuppressWarnings("deprecation")
     public void tick(BlockState blockState, ServerLevel serverLevel, BlockPos blockPos, RandomSource random) {
+        super.tick(blockState, serverLevel, blockPos, random);
         SuolSnadBlock.acceleratedTick(serverLevel, blockPos, random);
     }
 }
