@@ -128,6 +128,7 @@ publishMods {
         projectId = curseforge_id
         accessToken = providers.environmentVariable("CURSE_TOKEN")
         minecraftVersions.add("${minecraft_version}")
+        minecraftVersions.add("1.21.3")
         javaVersions.add(JavaVersion.VERSION_21)
     }
 }

@@ -51,7 +51,7 @@ public class SuolSnadBlock extends Block {
         int height = 1;
 
         while (isSameBlockType) {
-            if (blockPos.above(height).getY() < serverLevel.getMaxBuildHeight()) {
+            if (blockPos.above(height).getY() < serverLevel.getMaxY()) {
                 final BlockState nextBlock = serverLevel.getBlockState(blockPos.above(height));
 
                 if (nextBlock.is(blockAbove.getBlock())) {

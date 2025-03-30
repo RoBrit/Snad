@@ -42,7 +42,7 @@ public class SnadData {
         }
 
         if (event.includeServer()) {
-            generator.addProvider(true, new Recipes(packOutput, event.getLookupProvider()));
+            generator.addProvider(true, new Recipes.Runner(packOutput, event.getLookupProvider()));
             generator.addProvider(true, new TagGenerator(packOutput, event.getLookupProvider(), existingFileHelper));
         }
     }
@@ -109,29 +109,45 @@ public class SnadData {
     }
 
     public static final class Recipes extends RecipeProvider {
-        public Recipes(PackOutput pOutput, CompletableFuture<HolderLookup.Provider> pRegistries) {
-            super(pOutput, pRegistries);
+        private Recipes(HolderLookup.Provider p_360573_, RecipeOutput p_360872_) {
+            super(p_360573_, p_360872_);
         }
 
         @Override
-        protected void buildRecipes(RecipeOutput consumer) {
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.RED_SNAD.get())
+        protected void buildRecipes() {
+            this.shapeless(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.RED_SNAD.get())
                     .requires(Items.RED_SAND)
                     .requires(Items.RED_SAND)
                     .unlockedBy("has_red_sand", has(Items.RED_SAND))
-                    .save(consumer);
+                    .save(this.output);
 
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.SNAD.get())
+            this.shapeless(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.SNAD.get())
                     .requires(Items.SAND)
                     .requires(Items.SAND)
                     .unlockedBy("has_sand", has(Items.SAND))
-                    .save(consumer);
+                    .save(this.output);
 
-            ShapelessRecipeBuilder.shapeless(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.SUOL_SNAD.get())
+            this.shapeless(RecipeCategory.BUILDING_BLOCKS, BlockRegistry.SUOL_SNAD.get())
                     .requires(Items.SOUL_SAND)
                     .requires(Items.SOUL_SAND)
                     .unlockedBy("has_soul_sand", has(Items.SOUL_SAND))
-                    .save(consumer);
+                    .save(this.output);
+        }
+
+        public static class Runner extends RecipeProvider.Runner {
+            public Runner(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+                super(output, registries);
+            }
+
+            @Override
+            protected RecipeProvider createRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+                return new Recipes(registries, output);
+            }
+
+            @Override
+            public String getName() {
+                return "Snad Recipes";
+            }
         }
     }
 
@@ -142,9 +158,10 @@ public class SnadData {
 
         @Override
         protected void addTranslations() {
-            this.add("block.snad.snad", "Snad");
-            this.add("block.snad.red_snad", "Red Snad");
-            this.add("block.snad.suol_snad", "Suol Snad");
+            this.addBlock(BlockRegistry.SNAD, "Snad");
+            this.addBlock(BlockRegistry.RED_SNAD, "Red Snad");
+            this.addBlock(BlockRegistry.SUOL_SNAD, "Suol Snad");
+
         }
     }
 }
