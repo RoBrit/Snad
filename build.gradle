@@ -1,13 +1,16 @@
 plugins {
     id 'java-library'
-    id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.142'
-    id "me.modmuss50.mod-publish-plugin" version "0.5.1"
+    id 'net.neoforged.moddev' version '2.0.78'
+    id "me.modmuss50.mod-publish-plugin" version "0.8.4"
 }
 
-def mcBase = getMinecraftBaseVersion()
+tasks.named('wrapper', Wrapper).configure {
+    distributionType = Wrapper.DistributionType.BIN
+}
+
+def mcBase = getMinorAndPatchFromMc()
 
 group = 'com.robrit.snad'
 version = "${mcBase}.${mod_version}"
@@ -18,27 +21,48 @@ base {
 
 java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
+neoForge {
+    version = "${mcBase}.${neo_version}"
 
-runs {
-    configureEach {
-        systemProperty 'forge.logging.markers', 'REGISTRIES'
-        systemProperty 'forge.logging.console.level', 'debug'
-
-        modSource project.sourceSets.main
+    parchment {
+        mappingsVersion = project.parchment_mappings_version
+        minecraftVersion = project.parchment_minecraft_version.replace("\${mc_version}", minecraft_version)
     }
 
-    client {
-        systemProperty 'forge.enabledGameTestNamespaces', mod_id
+    runs {
+        configureEach {
+            systemProperty 'forge.logging.markers', 'REGISTRIES'
+            logLevel = org.slf4j.event.Level.DEBUG
+        }
+
+        client {
+            client()
+
+            // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        server {
+            server()
+            programArgument '--nogui'
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        data {
+            data()
+            programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
     }
 
-    server {
-        systemProperty 'forge.enabledGameTestNamespaces', mod_id
-        programArgument '--nogui'
-    }
-
-    data {
-        workingDirectory project.file('run-data')
-        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    mods {
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
     }
 }
 
@@ -51,10 +75,6 @@ configurations {
 
 repositories {
 
-}
-
-dependencies {
-    implementation "net.neoforged:neoforge:${forge_version}"
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
@@ -70,6 +90,13 @@ jar {
                 "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
         ])
     }
+
+    dependsOn("sourcesJar")
+}
+
+tasks.register("sourcesJar", Jar) {
+    archiveClassifier.set("sources")
+    from sourceSets.main.allJava
 }
 
 tasks.named('processResources', ProcessResources).configure {
@@ -88,34 +115,11 @@ tasks.named('processResources', ProcessResources).configure {
     }
 }
 
-//publishing {
-//    publications {
-//        register('mavenJava', MavenPublication) {
-//            artifact jar
-////            artifactId = project.name.toLowerCase()
-//        }
-//    }
-//
-//    repositories {
-//        def actor = providers.environmentVariable("GITHUB_ACTOR")
-//        if (actor.isPresent()) {
-//            maven {
-//                name = "GitHubPackages"
-//                url = "https://maven.pkg.github.com/RoBrit/Snad"
-//                credentials {
-//                    username = actor.get()
-//                    password = providers.environmentVariable("GITHUB_TOKEN").get()
-//                }
-//            }
-//        }
-//    }
-//}
-
 publishMods {
     dryRun = providers.environmentVariable("CURSE_TOKEN").getOrNull() == null
     changelog = file("./CHANGELOG.md").text
     version = project.version
-    file = project.provider { project.tasks.jar }.flatMap { it.archiveFile }
+    file = jar.archiveFile
     modLoaders.add("neoforge")
     type = STABLE
     displayName = "[${minecraft_version}] ${base.archivesName.get()} ${project.version}"
@@ -124,7 +128,7 @@ publishMods {
         projectId = curseforge_id
         accessToken = providers.environmentVariable("CURSE_TOKEN")
         minecraftVersions.add("${minecraft_version}")
-        javaVersions.add(JavaVersion.VERSION_17)
+        javaVersions.add(JavaVersion.VERSION_21)
     }
 }
 
@@ -138,23 +142,14 @@ idea {
         downloadJavadoc = true
     }
 }
-
 //#region helpers
 /**
  * Removes the 1. from Minecraft's version, then adds a 0 to the end if the
  * version does not contain three dots.
  */
-def getMinecraftBaseVersion() {
-    def version = project.minecraft_version
-    def parts = version.split("\\.")
-
-    // Remove the first part of the version
-    parts = parts[1..-1]
-
-    if (parts.size() < 2) {
-        parts << "0"
-    }
-
-    return parts.join(".")
+def getMinorAndPatchFromMc() {
+    String mcVersion = project.minecraft_version
+    String[] split = mcVersion.split("\\.")
+    return split[1] + "." + (split[2] ?: "0")
 }
 //#endregion
