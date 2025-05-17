@@ -18,6 +18,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.model.generators.BlockStateProvider;
 import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
+import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -81,6 +82,9 @@ public class SnadData {
         @Override
         protected void addTags(HolderLookup.Provider provider) {
             this.tag(Snad.SNAD_BLOCKS).add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get(), BlockRegistry.SUOL_SNAD.get());
+
+            this.tag(BlockTags.MINEABLE_WITH_SHOVEL)
+                    .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get(), BlockRegistry.SUOL_SNAD.get());
 
             this.tag(TagKey.create(Registries.BLOCK, ResourceLocation.withDefaultNamespace("cactus_plantable_on")))
                     .add(BlockRegistry.SNAD.get(), BlockRegistry.RED_SNAD.get());
